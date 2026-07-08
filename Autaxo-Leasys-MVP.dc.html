@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:#0b0c10;background-image:linear-gradient(to bottom,#0b0c10,#11141a);color:#e9ecf3;-webkit-font-smoothing:antialiased}
+  a{color:#60a5fa;text-decoration:none}
+  a:hover{color:#93c5fd}
+  ::selection{background:rgba(37,99,235,.35)}
+  @keyframes scanMove{0%{transform:translateY(0)}100%{transform:translateY(380px)}}
+  @keyframes rowIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @keyframes popIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+  @keyframes floatIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <!-- HEADER -->
+  <div style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 26px;border-bottom:1px solid #21283a;background:rgba(11,12,16,.85);backdrop-filter:blur(12px)">
+    <div style="display:flex;align-items:center;gap:14px">
+      <span style="font-size:21px;font-weight:800;letter-spacing:-.04em">aut<span style="color:#2563eb">axo</span></span>
+      <span style="width:1px;height:20px;background:#21283a"></span>
+      <span style="font-size:12px;font-weight:600;color:#60a5fa;background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.25);border-radius:999px;padding:4px 11px">Remarketing</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;background:#15171e;border:1px solid #21283a;border-radius:999px;padding:5px 6px 5px 13px">
+      <span style="font-size:13px;font-weight:600">Leasys Deutschland</span>
+      <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:999px;background:#2563eb;color:#fff;font-size:12px;font-weight:700">L</span>
+    </div>
+  </div>
+
+  <!-- STEPPER -->
+  <div style="display:flex;justify-content:center;padding:18px 26px;border-bottom:1px solid rgba(33,40,58,.55)">
+    <div style="display:flex;align-items:center;width:100%;max-width:680px">
+      <sc-for list="{{ stages }}" as="s" hint-placeholder-count="4">
+        <div style="display:flex;align-items:center;gap:9px;flex:none">
+          <sc-if value="{{ s.isDone }}"><span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;font-size:13px;font-weight:700;flex:none;background:#2563eb;border:1px solid #2563eb;color:#fff">✓</span></sc-if>
+          <sc-if value="{{ s.isActive }}"><span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;font-size:13px;font-weight:700;flex:none;background:rgba(37,99,235,.15);border:1px solid #2563eb;color:#60a5fa;box-shadow:0 0 0 4px rgba(37,99,235,.12)">{{ s.mark }}</span></sc-if>
+          <sc-if value="{{ s.isTodo }}"><span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;font-size:13px;font-weight:700;flex:none;background:transparent;border:1px solid #21283a;color:#5f6b7d">{{ s.mark }}</span></sc-if>
+          <sc-if value="{{ s.labelActive }}"><span style="font-size:13px;white-space:nowrap;color:#e9ecf3;font-weight:600">{{ s.label }}</span></sc-if>
+          <sc-if value="{{ s.labelTodo }}"><span style="font-size:13px;white-space:nowrap;color:#5f6b7d;font-weight:500">{{ s.label }}</span></sc-if>
+        </div>
+        <sc-if value="{{ s.showLineDone }}"><span style="flex:1;height:2px;border-radius:2px;margin:0 12px;background:#2563eb"></span></sc-if>
+        <sc-if value="{{ s.showLineOff }}"><span style="flex:1;height:2px;border-radius:2px;margin:0 12px;background:#21283a"></span></sc-if>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- ============ STEP 1 · UPLOAD ============ -->
+  <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+    <div style="max-width:720px;margin:0 auto;padding:52px 26px 80px;text-align:center">
+      <div style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#60a5fa;margin-bottom:16px">Neuer Leasingrückläufer</div>
+      <h1 style="font-size:38px;font-weight:700;letter-spacing:-.02em;line-height:1.14;margin:0 0 16px">Ein Dokument hochladen.<br>Den Rest übernimmt Autaxo.</h1>
+      <p style="font-size:17px;line-height:1.55;color:#a0aab8;margin:0 auto 38px;max-width:540px">Laden Sie das Rücknahme-Gutachten hoch — Autaxo liest es aus, erstellt das Listing und verteilt es an das Händlernetz. Ihr Aufwand endet hier.</p>
+
+      <div onClick="{{ onUpload }}" style="cursor:pointer;border:1.5px dashed #2f3a54;border-radius:16px;background:linear-gradient(to bottom,rgba(37,99,235,.05),rgba(37,99,235,.01));padding:38px 32px;transition:border-color .2s,background .2s" style-hover="border-color:#2563eb;background:rgba(37,99,235,.09)">
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;background:rgba(37,99,235,.12);border:1px solid rgba(37,99,235,.25);color:#60a5fa;margin-bottom:18px">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+        </div>
+        <div style="font-size:16px;font-weight:600;margin-bottom:6px">Rücknahme-Gutachten hier ablegen</div>
+        <div style="font-size:13px;color:#a0aab8;margin-bottom:24px">DEKRA · TÜV · PDF — Fotos, km, Schäden &amp; Restwert inklusive</div>
+
+        <div style="display:flex;align-items:center;gap:12px;max-width:420px;margin:0 auto 22px;background:#15171e;border:1px solid #21283a;border-radius:10px;padding:11px 14px;text-align:left">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:8px;background:rgba(179,0,24,.14);color:#f87171;font-size:10px;font-weight:800;letter-spacing:.03em;flex:none">PDF</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ v.file }}</div>
+            <div style="font-size:12px;color:#a0aab8">2,4 MB · bereit zum Auslesen</div>
+          </div>
+          <span style="color:#4ade80;font-size:15px;flex:none">✓</span>
+        </div>
+
+        <span style="display:inline-flex;align-items:center;gap:8px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;padding:13px 26px;border-radius:6px;box-shadow:0 0 0 1px rgba(37,99,235,.4),0 12px 40px rgba(37,99,235,.22)">Auslesen starten →</span>
+      </div>
+      <p style="font-size:13px;color:#5f6b7d;margin-top:22px">Bei jeder Rücknahme entsteht ohnehin ein Gutachten — mehr braucht Autaxo nicht.</p>
+    </div>
+  </sc-if>
+
+  <!-- ============ STEP 2 · AUSLESEN ============ -->
+  <sc-if value="{{ isStep2 }}">
+    <div style="max-width:1040px;margin:0 auto;padding:40px 26px 76px;width:100%">
+      <div style="text-align:center;margin-bottom:28px">
+        <h1 style="font-size:30px;font-weight:700;letter-spacing:-.02em;margin:0 0 10px">Autaxo liest das Gutachten aus</h1>
+        <p style="font-size:16px;color:#a0aab8;margin:0 auto;max-width:560px">Aus dem DEKRA-Dokument entsteht automatisch ein vollständiges Listing — ohne manuelles Einpflegen.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:0.82fr 1fr;gap:22px;align-items:start">
+
+        <!-- LEFT: document mock with scan -->
+        <div style="position:relative;border:1px solid #21283a;border-radius:16px;background:#0e1016;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.5)">
+          <div style="position:relative;padding:22px;height:420px;overflow:hidden">
+            <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #21283a;padding-bottom:12px;margin-bottom:16px">
+              <div style="display:flex;align-items:center;gap:8px"><span style="font-weight:800;font-size:14px;letter-spacing:.03em">DEKRA</span><span style="font-size:12px;color:#a0aab8">Fahrzeugbewertung</span></div>
+              <span style="font-size:11px;color:#5f6b7d;font-family:ui-monospace,monospace">Nr. 2026-04471</span>
+            </div>
+            <div style="height:8px;width:44%;border-radius:4px;background:#232c40;margin-bottom:14px"></div>
+            <div style="height:7px;width:82%;border-radius:4px;background:#1a2132;margin-bottom:9px"></div>
+            <div style="height:7px;width:74%;border-radius:4px;background:#1a2132;margin-bottom:9px"></div>
+            <div style="height:7px;width:88%;border-radius:4px;background:#1a2132;margin-bottom:18px"></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px">
+              <div style="aspect-ratio:4/3;border-radius:6px;background:linear-gradient(135deg,#1b2233,#12151d);border:1px solid #212a3e;display:flex;align-items:center;justify-content:center;color:#2f3a54"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div>
+              <div style="aspect-ratio:4/3;border-radius:6px;background:linear-gradient(135deg,#1b2233,#12151d);border:1px solid #212a3e"></div>
+              <div style="aspect-ratio:4/3;border-radius:6px;background:linear-gradient(135deg,#1b2233,#12151d);border:1px solid #212a3e"></div>
+            </div>
+            <div style="height:7px;width:60%;border-radius:4px;background:#1a2132;margin-bottom:9px"></div>
+            <div style="height:7px;width:70%;border-radius:4px;background:#1a2132;margin-bottom:18px"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(37,99,235,.3);background:rgba(37,99,235,.06);border-radius:8px;padding:10px 14px">
+              <span style="font-size:12px;color:#a0aab8">Kalkulierter Restwert</span>
+              <div style="height:9px;width:70px;border-radius:4px;background:#2b4373"></div>
+            </div>
+            <div style="position:absolute;left:0;right:0;top:0;height:56px;background:linear-gradient(to bottom,rgba(37,99,235,.16),transparent);animation:scanMove 2.4s ease-in-out infinite"></div>
+            <div style="position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#60a5fa,transparent);box-shadow:0 0 12px 2px rgba(96,165,250,.55);animation:scanMove 2.4s ease-in-out infinite"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT: extracted data -->
+        <div style="border:1px solid #21283a;border-radius:16px;background:#15171e;padding:22px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div style="display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600">
+              <sc-if value="{{ parsingDone }}"><span style="color:#4ade80;font-size:15px">✓</span></sc-if>
+              <sc-if value="{{ notParsingDone }}"><span style="width:14px;height:14px;border-radius:999px;border:2px solid rgba(96,165,250,.3);border-top-color:#60a5fa;display:inline-block;animation:spin .7s linear infinite"></span></sc-if>
+              {{ parseLabel }}
+            </div>
+            <span style="font-size:13px;color:#a0aab8;font-variant-numeric:tabular-nums">{{ parsePct }}%</span>
+          </div>
+          <div style="height:6px;border-radius:999px;background:#21283a;overflow:hidden;margin-bottom:20px">
+            <div style="height:100%;border-radius:999px;background:linear-gradient(90deg,#2563eb,#60a5fa);width:{{ parseWidth }};transition:width .12s linear"></div>
+          </div>
+
+          <div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#a0aab8;margin-bottom:6px">Erkannte Fahrzeugdaten</div>
+          <div>
+            <sc-for list="{{ visibleFields }}" as="f" hint-placeholder-count="0">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid rgba(33,40,58,.55);animation:rowIn .4s ease both">
+                <span style="font-size:13px;color:#a0aab8">{{ f.label }}</span>
+                <span style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;text-align:right">{{ f.value }}<span style="color:#4ade80;font-size:11px">✓</span></span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#a0aab8;margin:18px 0 9px">Fotos importiert <span style="color:#e9ecf3">({{ photosShown }}/6)</span></div>
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;min-height:44px">
+            <sc-for list="{{ visiblePhotos }}" as="p" hint-placeholder-count="0">
+              <div style="aspect-ratio:4/3;border-radius:8px;background:linear-gradient(135deg,#1b2233,#12151d);border:1px solid #212a3e;display:flex;align-items:center;justify-content:center;color:#3b445c;animation:popIn .35s ease both">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>
+              </div>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ parsingDone }}">
+            <div style="margin-top:22px;animation:floatIn .4s ease both">
+              <div style="display:flex;align-items:center;gap:8px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:#4ade80;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:16px">✓ Alle Daten erkannt · 0 manuelle Eingaben</div>
+              <button onClick="{{ onPublish }}" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;padding:14px;border:none;border-radius:6px;cursor:pointer;box-shadow:0 0 0 1px rgba(37,99,235,.4),0 12px 40px rgba(37,99,235,.22)" style-hover="background:#1d4ed8">Listing im Händlernetz veröffentlichen →</button>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ STEP 3 · LIVE IM NETZ ============ -->
+  <sc-if value="{{ isStep3 }}">
+    <div style="max-width:840px;margin:0 auto;padding:44px 26px 76px;width:100%">
+      <div style="text-align:center;margin-bottom:30px">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:#4ade80;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600;margin-bottom:18px">✓ Automatisch gelistet</div>
+        <h1 style="font-size:32px;font-weight:700;letter-spacing:-.02em;margin:0 0 12px">Live im Autaxo-Händlernetz</h1>
+        <p style="font-size:16px;color:#a0aab8;margin:0 auto;max-width:540px">Ihr Aufwand bis hier: <strong style="color:#e9ecf3">ein Upload</strong>. Autaxo hat das Fahrzeug ausgelesen, das Listing erstellt und an das Netz verteilt.</p>
+      </div>
+
+      <div style="border:1px solid #21283a;border-radius:16px;background:#15171e;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.4)">
+        <div style="display:grid;grid-template-columns:300px 1fr">
+          <div style="position:relative;background:linear-gradient(135deg,#1a2234,#101319);display:flex;align-items:center;justify-content:center;border-right:1px solid #21283a;color:#2f3a54;min-height:230px">
+            <svg width="140" height="140" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" style="opacity:.55"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+            <span style="position:absolute;left:14px;bottom:12px;font-size:11px;font-weight:600;color:#a0aab8;background:rgba(11,12,16,.6);border:1px solid #21283a;border-radius:6px;padding:3px 8px">Fahrzeugfoto · 1 / 6</span>
+          </div>
+          <div style="padding:24px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <span style="font-size:11px;font-weight:700;color:#fff;background:#2563eb;border-radius:999px;padding:3px 10px;letter-spacing:.02em">NEU</span>
+              <span style="font-size:12px;color:#a0aab8">Leasingrückläufer · Leasys</span>
+            </div>
+            <h2 style="font-size:23px;font-weight:700;letter-spacing:-.02em;margin:0 0 4px">{{ v.title }}</h2>
+            <p style="font-size:14px;color:#a0aab8;margin:0 0 18px">{{ v.subtitle }}</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;margin-bottom:20px">
+              <sc-for list="{{ v.specs }}" as="sp" hint-placeholder-count="4">
+                <div>
+                  <div style="font-size:11px;color:#5f6b7d;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">{{ sp.k }}</div>
+                  <div style="font-size:14px;font-weight:600">{{ sp.x }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;border-top:1px solid #21283a;padding-top:16px">
+              <div>
+                <div style="font-size:12px;color:#a0aab8;margin-bottom:2px">Kalkulierter Restwert</div>
+                <div style="font-size:26px;font-weight:700;letter-spacing:-.02em">{{ v.price }}</div>
+              </div>
+              <span style="display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#22c55e;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:999px;padding:6px 12px"><span style="width:8px;height:8px;border-radius:999px;background:#22c55e;animation:pulseDot 1.8s infinite"></span>Sichtbar für {{ dealerCount }} Händler</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:22px;border:1px solid rgba(37,99,235,.35);border-radius:16px;background:rgba(37,99,235,.05);padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 12px 40px rgba(37,99,235,.14)">
+        <div>
+          <div style="font-size:16px;font-weight:600;margin-bottom:4px">So sieht es Ihr Händlernetz</div>
+          <div style="font-size:14px;color:#a0aab8">Werfen Sie einen Blick auf die Händler-Ansicht — dort kauft das Netz verbindlich per Klick.</div>
+        </div>
+        <button onClick="{{ onOpenDealer }}" style="flex:none;display:inline-flex;align-items:center;gap:8px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;padding:13px 22px;border:none;border-radius:6px;cursor:pointer;white-space:nowrap" style-hover="background:#1d4ed8">Händler-Ansicht öffnen →</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ STEP 4 · HÄNDLER-ANSICHT ============ -->
+  <sc-if value="{{ isStep4 }}">
+    <div style="width:100%">
+      <div style="display:flex;align-items:center;justify-content:center;gap:9px;background:rgba(37,99,235,.08);border-bottom:1px solid rgba(37,99,235,.2);padding:10px 20px;font-size:13px;color:#60a5fa">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        Vorschau — so sieht ein angeschlossener Händler die Rückläufer.
+      </div>
+
+      <div style="max-width:1060px;margin:0 auto;padding:30px 26px 76px">
+        <div style="display:grid;grid-template-columns:220px 1fr;gap:26px;align-items:start">
+
+          <!-- sidebar -->
+          <div style="border:1px solid #21283a;border-radius:16px;background:#15171e;padding:14px">
+            <div style="display:flex;align-items:center;gap:9px;padding:6px 8px 14px;border-bottom:1px solid #21283a;margin-bottom:10px">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;background:rgba(37,99,235,.12);border:1px solid rgba(37,99,235,.25);color:#60a5fa;flex:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></span>
+              <div style="min-width:0"><div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Autohaus Berger</div><div style="font-size:11px;color:#5f6b7d">Händler-Portal</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;color:#a0aab8;font-size:14px;font-weight:500"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Marktplatz</div>
+            <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;color:#a0aab8;font-size:14px;font-weight:500"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>Mein Bestand</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;background:rgba(37,99,235,.12);border:1px solid rgba(37,99,235,.25);color:#e9ecf3;font-size:14px;font-weight:600;margin:2px 0">
+              <span style="display:flex;align-items:center;gap:11px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Leasingrückläufer</span>
+              <span style="font-size:11px;font-weight:700;color:#fff;background:#2563eb;border-radius:999px;padding:2px 8px">1 neu</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;color:#a0aab8;font-size:14px;font-weight:500"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Einkauf</div>
+            <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;color:#a0aab8;font-size:14px;font-weight:500"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>Buchhaltung</div>
+          </div>
+
+          <!-- main -->
+          <div>
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px">
+              <div>
+                <h2 style="font-size:22px;font-weight:700;letter-spacing:-.02em;margin:0 0 4px">Leasingrückläufer</h2>
+                <p style="font-size:13px;color:#a0aab8;margin:0">Direkt von Leasinggesellschaften · inkl. Kaufvertrag, Rechnung &amp; Transport</p>
+              </div>
+              <span style="font-size:12px;font-weight:600;color:#60a5fa;background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.25);border-radius:999px;padding:5px 12px;white-space:nowrap">{{ marketCount }} verfügbar</span>
+            </div>
+
+            <!-- featured card -->
+            <div style="border:1px solid #2563eb;border-radius:16px;background:rgba(37,99,235,.05);box-shadow:0 12px 40px rgba(37,99,235,.16);overflow:hidden;margin-bottom:16px">
+              <div style="display:grid;grid-template-columns:230px 1fr">
+                <div style="position:relative;background:linear-gradient(135deg,#1a2234,#101319);display:flex;align-items:center;justify-content:center;color:#2f3a54;min-height:200px">
+                  <svg width="118" height="118" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" style="opacity:.55"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+                  <span style="position:absolute;top:12px;left:12px;font-size:11px;font-weight:700;color:#fff;background:#2563eb;border-radius:999px;padding:3px 10px;letter-spacing:.02em">NEU</span>
+                </div>
+                <div style="padding:20px 22px;display:flex;flex-direction:column">
+                  <div style="font-size:12px;color:#a0aab8;margin-bottom:6px">Leasingrückläufer · Leasys Deutschland</div>
+                  <h3 style="font-size:20px;font-weight:700;letter-spacing:-.02em;margin:0 0 4px">{{ v.title }}</h3>
+                  <p style="font-size:13px;color:#a0aab8;margin:0 0 14px">{{ v.subtitle }}</p>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+                    <sc-for list="{{ v.specs }}" as="sp" hint-placeholder-count="4">
+                      <span style="font-size:12px;color:#c7cede;background:#0e1016;border:1px solid #21283a;border-radius:6px;padding:5px 10px;white-space:nowrap">{{ sp.k }}: <strong style="color:#e9ecf3;font-weight:600">{{ sp.x }}</strong></span>
+                    </sc-for>
+                  </div>
+                  <div style="margin-top:auto;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding-top:14px;border-top:1px solid rgba(37,99,235,.25)">
+                    <div>
+                      <div style="font-size:12px;color:#a0aab8;margin-bottom:2px">Sofort-Kaufpreis</div>
+                      <div style="font-size:24px;font-weight:700;letter-spacing:-.02em;white-space:nowrap">{{ v.price }}</div>
+                    </div>
+                    <div style="text-align:right">
+                      <button onClick="{{ onBuy }}" style="display:inline-flex;align-items:center;gap:8px;background:#2563eb;color:#fff;font-size:15px;font-weight:600;padding:13px 22px;border:none;border-radius:6px;cursor:pointer;box-shadow:0 0 0 1px rgba(37,99,235,.4),0 12px 40px rgba(37,99,235,.24)" style-hover="background:#1d4ed8">Verbindlich kaufen</button>
+                      <div style="font-size:12px;color:#5f6b7d;margin-top:8px">inkl. Kaufvertrag, Rechnung &amp; Transportauftrag</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- context rows -->
+            <sc-for list="{{ marketOthers }}" as="c" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:16px;border:1px solid #21283a;border-radius:12px;background:#15171e;padding:11px 16px;margin-bottom:10px">
+                <div style="width:66px;height:48px;border-radius:8px;background:linear-gradient(135deg,#1b2233,#12151d);border:1px solid #212a3e;display:flex;align-items:center;justify-content:center;color:#2f3a54;flex:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:15px;font-weight:600">{{ c.title }}</div>
+                  <div style="font-size:13px;color:#a0aab8">{{ c.spec }}</div>
+                </div>
+                <div style="font-size:16px;font-weight:700;white-space:nowrap">{{ c.price }}</div>
+                <span style="font-size:13px;font-weight:600;color:#e9ecf3;background:#0e1016;border:1px solid #21283a;border-radius:6px;padding:8px 16px;white-space:nowrap">Kaufen</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <!-- buying overlay -->
+      <sc-if value="{{ buying }}">
+        <div style="position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(6,7,10,.72);backdrop-filter:blur(4px)">
+          <div style="width:380px;background:#15171e;border:1px solid #21283a;border-radius:16px;padding:26px;box-shadow:0 24px 70px rgba(0,0,0,.6);animation:popIn .3s ease both">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+              <span style="width:18px;height:18px;border-radius:999px;border:2px solid rgba(96,165,250,.3);border-top-color:#60a5fa;display:inline-block;animation:spin .7s linear infinite;flex:none"></span>
+              <div style="font-size:16px;font-weight:600">Kauf wird abgewickelt …</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:11px;min-height:120px">
+              <sc-for list="{{ visibleDocs }}" as="d" hint-placeholder-count="0">
+                <div style="display:flex;align-items:center;gap:11px;font-size:14px;animation:rowIn .35s ease both">
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.35);color:#4ade80;font-size:12px;flex:none">✓</span>
+                  {{ d }}
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <!-- ============ STEP 5 · VERKAUFT ============ -->
+  <sc-if value="{{ isStep5 }}">
+    <div style="max-width:820px;margin:0 auto;padding:52px 26px 80px;text-align:center;width:100%">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:999px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.35);color:#4ade80;margin-bottom:22px;animation:popIn .4s ease both">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <h1 style="font-size:44px;font-weight:700;letter-spacing:-.02em;margin:0 0 12px">Verkauft.</h1>
+      <p style="font-size:18px;color:#a0aab8;margin:0 auto 28px;max-width:520px">{{ v.title }} · an {{ v.buyer }} · <strong style="color:#e9ecf3;white-space:nowrap">{{ v.price }}</strong></p>
+
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:36px">
+        <span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#4ade80;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:999px;padding:7px 14px">✓ Kaufvertrag erstellt</span>
+        <span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#4ade80;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:999px;padding:7px 14px">✓ Rechnung erstellt</span>
+        <span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#4ade80;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:999px;padding:7px 14px">✓ Transportauftrag ausgelöst</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:left">
+        <div style="border:1px solid #21283a;border-radius:16px;background:#15171e;padding:22px">
+          <div style="font-size:38px;font-weight:700;letter-spacing:-.02em;background:linear-gradient(90deg,#2563eb,#60a5fa);-webkit-background-clip:text;background-clip:text;color:transparent">1</div>
+          <div style="font-size:13px;color:#a0aab8;margin-top:4px">Upload — Ihr gesamter Aufwand</div>
+        </div>
+        <div style="border:1px solid #21283a;border-radius:16px;background:#15171e;padding:22px">
+          <div style="font-size:38px;font-weight:700;letter-spacing:-.02em;background:linear-gradient(90deg,#2563eb,#60a5fa);-webkit-background-clip:text;background-clip:text;color:transparent">4 Std</div>
+          <div style="font-size:13px;color:#a0aab8;margin-top:4px">von Upload bis verkauft</div>
+          <div style="font-size:12px;color:#5f6b7d;margin-top:2px">statt Ø 47 Standtage</div>
+        </div>
+        <div style="border:1px solid #21283a;border-radius:16px;background:#15171e;padding:22px">
+          <div style="font-size:38px;font-weight:700;letter-spacing:-.02em;background:linear-gradient(90deg,#2563eb,#60a5fa);-webkit-background-clip:text;background-clip:text;color:transparent">100 %</div>
+          <div style="font-size:13px;color:#a0aab8;margin-top:4px">Restwert realisiert · {{ v.price }}</div>
+        </div>
+      </div>
+
+      <p style="margin:38px auto 0;font-size:18px;color:#a0aab8;max-width:540px;line-height:1.5">„Leasys lädt ein Dokument hoch — den Rest macht Autaxo."</p>
+
+      <button onClick="{{ onReset }}" style="margin-top:28px;display:inline-flex;align-items:center;gap:8px;background:#15171e;border:1px solid #21283a;color:#e9ecf3;font-size:15px;font-weight:600;padding:13px 24px;border-radius:6px;cursor:pointer" style-hover="border-color:rgba(37,99,235,.5);background:#0e1016">↺ Nächsten Rückläufer einstellen</button>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180,&quot;height&quot;:760},&quot;featuredVehicle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Jeep Compass 4xe&quot;,&quot;options&quot;:[&quot;Fiat 500e La Prima&quot;,&quot;Jeep Compass 4xe&quot;,&quot;Peugeot e-2008 GT&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;demoSpeed&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Normal&quot;,&quot;options&quot;:[&quot;Cinematic&quot;,&quot;Normal&quot;,&quot;Schnell&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;dealerCount&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:64,&quot;min&quot;:10,&quot;max&quot;:400,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Demo&quot;}}">
+class Component extends DCLogic {
+  state = { step:1, parsePct:0, fieldsShown:0, photosShown:0, parsingDone:false, buying:false, docsShown:0 };
+
+  _timers = [];
+  clearTimers(){ this._timers.forEach(t=>clearTimeout(t)); this._timers=[]; }
+  componentWillUnmount(){ this.clearTimers(); }
+
+  speedMul(){ const m={Cinematic:1.6,Normal:1,Schnell:0.55}; return m[this.props.demoSpeed] ?? 1; }
+
+  vehicles(){
+    return {
+      'Fiat 500e La Prima':{
+        title:'Fiat 500e La Prima',
+        subtitle:'3-türig · Elektro · 87 kW (118 PS) · 42 kWh',
+        price:'14.900 €',
+        file:'DEKRA_Gutachten_Fiat-500e.pdf',
+        buyer:'Autohaus Berger, München',
+        specs:[{k:'Erstzulassung',x:'03/2022'},{k:'Laufleistung',x:'34.812 km'},{k:'Antrieb',x:'Elektro (BEV)'},{k:'Batterie (SoH)',x:'94 %'}],
+        fields:[
+          {label:'Marke / Modell',value:'Fiat 500e La Prima'},
+          {label:'Erstzulassung',value:'03/2022'},
+          {label:'Laufleistung',value:'34.812 km'},
+          {label:'Antrieb',value:'Elektro · 87 kW'},
+          {label:'Batterie (SoH)',value:'94 %'},
+          {label:'Außenfarbe',value:'Ocean Green Met.'},
+          {label:'Zustand',value:'gepflegt'},
+          {label:'Schäden lt. Gutachten',value:'2 Positionen'},
+          {label:'Kalkulierter Restwert',value:'14.900 €'},
+        ],
+      },
+      'Jeep Compass 4xe':{
+        title:'Jeep Compass 4xe',
+        subtitle:'SUV · Plug-in-Hybrid · 177 kW (240 PS) · 4x4',
+        price:'22.400 €',
+        file:'DEKRA_Gutachten_Jeep-Compass-4xe.pdf',
+        buyer:'Autohaus Berger, München',
+        specs:[{k:'Erstzulassung',x:'06/2021'},{k:'Laufleistung',x:'51.240 km'},{k:'Antrieb',x:'Plug-in-Hybrid'},{k:'Batterie (SoH)',x:'91 %'}],
+        fields:[
+          {label:'Marke / Modell',value:'Jeep Compass 4xe'},
+          {label:'Erstzulassung',value:'06/2021'},
+          {label:'Laufleistung',value:'51.240 km'},
+          {label:'Antrieb',value:'PHEV · 177 kW'},
+          {label:'Batterie (SoH)',value:'91 %'},
+          {label:'Außenfarbe',value:'Granite Crystal'},
+          {label:'Zustand',value:'gepflegt'},
+          {label:'Schäden lt. Gutachten',value:'3 Positionen'},
+          {label:'Kalkulierter Restwert',value:'22.400 €'},
+        ],
+      },
+      'Peugeot e-2008 GT':{
+        title:'Peugeot e-2008 GT',
+        subtitle:'SUV · Elektro · 100 kW (136 PS) · 50 kWh',
+        price:'18.700 €',
+        file:'DEKRA_Gutachten_Peugeot-e2008.pdf',
+        buyer:'Autohaus Berger, München',
+        specs:[{k:'Erstzulassung',x:'09/2022'},{k:'Laufleistung',x:'28.905 km'},{k:'Antrieb',x:'Elektro (BEV)'},{k:'Batterie (SoH)',x:'96 %'}],
+        fields:[
+          {label:'Marke / Modell',value:'Peugeot e-2008 GT'},
+          {label:'Erstzulassung',value:'09/2022'},
+          {label:'Laufleistung',value:'28.905 km'},
+          {label:'Antrieb',value:'Elektro · 100 kW'},
+          {label:'Batterie (SoH)',value:'96 %'},
+          {label:'Außenfarbe',value:'Vertigo Blue'},
+          {label:'Zustand',value:'gepflegt'},
+          {label:'Schäden lt. Gutachten',value:'1 Position'},
+          {label:'Kalkulierter Restwert',value:'18.700 €'},
+        ],
+      },
+    };
+  }
+  currentVehicle(){ const vs=this.vehicles(); return vs[this.props.featuredVehicle] ?? vs['Fiat 500e La Prima']; }
+
+  marketOthers(){
+    return [
+      {title:'Opel Corsa-e Edition',spec:'02/2022 · 41.100 km · Elektro',price:'12.300 €'},
+      {title:'Citroën ë-C4 Shine',spec:'11/2021 · 33.780 km · Elektro',price:'15.900 €'},
+      {title:'Peugeot 308 SW BlueHDi',spec:'05/2022 · 39.220 km · Diesel',price:'13.900 €'},
+      {title:'Fiat Tipo Kombi 1.5',spec:'07/2021 · 46.500 km · Benzin',price:'11.400 €'},
+    ];
+  }
+
+  startParsing(){
+    this.clearTimers();
+    this.setState({step:2,parsePct:0,fieldsShown:0,photosShown:0,parsingDone:false});
+    const s=this.speedMul();
+    const v=this.currentVehicle();
+    const nF=v.fields.length, nP=6;
+    const fg=420*s;
+    for(let i=1;i<=nF;i++) this._timers.push(setTimeout(()=>this.setState({fieldsShown:i}),fg*i));
+    const ps=fg*1.6, pg=170*s;
+    for(let i=1;i<=nP;i++) this._timers.push(setTimeout(()=>this.setState({photosShown:i}),ps+pg*i));
+    const total=fg*nF+500*s, t0=Date.now();
+    const tick=()=>{
+      const p=Math.min(100,Math.round((Date.now()-t0)/total*100));
+      this.setState({parsePct:p});
+      if(p<100){ this._timers.push(setTimeout(tick,60)); }
+      else { this.setState({parsingDone:true,fieldsShown:nF,photosShown:nP}); }
+    };
+    this._timers.push(setTimeout(tick,200));
+  }
+
+  openDealer(){ this.clearTimers(); this.setState({step:4,buying:false,docsShown:0}); }
+
+  buy(){
+    this.clearTimers();
+    this.setState({buying:true,docsShown:0});
+    const s=this.speedMul();
+    for(let i=1;i<=3;i++) this._timers.push(setTimeout(()=>this.setState({docsShown:i}),520*s*i));
+    this._timers.push(setTimeout(()=>this.setState({step:5,buying:false}),520*s*3+1000*s));
+  }
+
+  reset(){ this.clearTimers(); this.setState({step:1,parsePct:0,fieldsShown:0,photosShown:0,parsingDone:false,buying:false,docsShown:0}); }
+
+  renderVals(){
+    const st=this.state, v=this.currentVehicle();
+    const dealerCount=this.props.dealerCount ?? 64;
+    const visibleFields=v.fields.slice(0,st.fieldsShown);
+    const visiblePhotos=Array.from({length:st.photosShown},(_,i)=>({n:i+1}));
+    const others=this.marketOthers();
+    const docsAll=['Kaufvertrag erstellt','Rechnung erstellt','Transportauftrag ausgelöst'];
+    const visibleDocs=docsAll.slice(0,st.docsShown);
+
+    const activeIdx={1:0,2:1,3:2,4:2,5:3}[st.step];
+    const stages=['Upload','Auslesen','Händlernetz','Verkauft'].map((label,i)=>{
+      const done = i<activeIdx || (i===activeIdx && st.step===5);
+      const active = i===activeIdx && st.step!==5;
+      const todo = i>activeIdx;
+      const lineOn = i<activeIdx;
+      return { label, mark:String(i+1), isDone:done, isActive:active, isTodo:todo,
+        labelActive:done||active, labelTodo:todo, showLine:i<3, showLineDone:i<3&&lineOn, showLineOff:i<3&&!lineOn };
+    });
+
+    return {
+      isStep1:st.step===1,isStep2:st.step===2,isStep3:st.step===3,isStep4:st.step===4,isStep5:st.step===5,
+      parsingDone:st.parsingDone, notParsingDone:!st.parsingDone,
+      parsePct:st.parsePct, parseWidth:st.parsePct+'%',
+      parseLabel: st.parsingDone?'Gutachten vollständig ausgelesen':'Autaxo liest das Gutachten aus …',
+      visibleFields, visiblePhotos, photosShown:st.photosShown, visibleDocs,
+      v, dealerCount, marketOthers:others, marketCount:others.length+1, buying:st.buying, stages,
+      onUpload:()=>this.startParsing(),
+      onPublish:()=>this.setState({step:3}),
+      onOpenDealer:()=>this.openDealer(),
+      onBuy:()=>this.buy(),
+      onReset:()=>this.reset(),
+    };
+  }
+}
+</script>
+</body>
+</html>
