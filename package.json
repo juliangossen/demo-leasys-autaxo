@@ -1,0 +1,10 @@
+{
+  "name": "demo-leasys-autaxo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cooperation example between Leasys and Autaxo — static dc-runtime prototype",
+  "scripts": {
+    "dev": "node serve.mjs",
+    "start": "node serve.mjs"
+  }
+}

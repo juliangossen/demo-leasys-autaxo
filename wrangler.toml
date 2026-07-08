@@ -1,0 +1,10 @@
+# Cloudflare Workers config — serves the static prototype from ./public
+# Deploy: npx wrangler deploy
+name = "demo-leasys-autaxo"
+compatibility_date = "2026-07-08"
+
+[assets]
+directory = "./public"
+# Root URL ("/") serves public/index.html. Unknown paths return a single-page
+# response of index.html; change to "404-page" if you add a public/404.html.
+not_found_handling = "single-page-application"
